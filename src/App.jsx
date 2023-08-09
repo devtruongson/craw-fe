@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -10,6 +10,7 @@ function App() {
     const [endImageNumber, setEndImageNumber] = useState("");
     const [url, setUrl] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [count, setCount] = useState(0);
 
     const handleDownload = async () => {
         const zip = new JSZip();
@@ -17,6 +18,7 @@ function App() {
         setIsLoading(true);
 
         for (let i = startImageNumber; i <= endImageNumber; i++) {
+            setCount(i);
             const imageUrl = `${url}/${i.toString().padStart(6, "0")}.jpg`;
             const response = await axios.get(
                 `https://craw.onrender.com/proxy?url=${imageUrl}`,
@@ -37,13 +39,18 @@ function App() {
         <div className="App container w-100vw">
             {isLoading && (
                 <div className="overlay">
-                    <ClipLoader
-                        color={"#ccc"}
-                        loading={true}
-                        size={150}
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <span>
+                        <ClipLoader
+                            color={"#ccc"}
+                            loading={true}
+                            size={150}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                        <p className="text-center">
+                            Đã Tải Song: {count} / {endImageNumber} Trên tổng số
+                        </p>
+                    </span>
                 </div>
             )}
             <div>
